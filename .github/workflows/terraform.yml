@@ -1,10 +1,12 @@
-# build - github workflow
+# terraform - github workflow
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 
 # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions
-name: build
+name: terraform
 
 on:
+  push:
+
   # enable manual workflow
   workflow_dispatch:
     inputs: {}
