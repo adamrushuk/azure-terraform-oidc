@@ -36,11 +36,42 @@ az ad app federated-credential create --id $APP_OBJECT_ID --parameters cred_para
 
 ## Assign RBAC Role to Subscription
 
-Run the code below to assign the `Contributor` RBAC role to your Subscription:
+Run the code below to assign the `Contributor` RBAC role to the Subscription:
 
 ```bash
 SUBSCRIPTION_ID=$(az account show --query id --output tsv)
 az role assignment create --role "Contributor" --assignee "$APP_CLIENT_ID" --subscription "$SUBSCRIPTION_ID"
+```
+
+## Create Terraform Backend Storage and Assign RBAC Role to Container
+
+Run the code below to create the Terraform storage and assign the `Storage Blob Data Contributor` RBAC role to the container:
+
+```bash
+# vars
+PREFIX='arshz'
+LOCATION='eastus'
+TERRAFORM_STORAGE_RG="${PREFIX}-rg-tfstate"
+TERRAFORM_STORAGE_ACCOUNT="${PREFIX}sttfstate${LOCATION}"
+TERRAFORM_STORAGE_CONTAINER="terraform"
+
+# resource group
+az group create --location "$LOCATION" --name "$TERRAFORM_STORAGE_RG"
+
+# storage account
+STORAGE_ID=$(az storage account create --name "$TERRAFORM_STORAGE_ACCOUNT" --resource-group "$TERRAFORM_STORAGE_RG" --location "$LOCATION" --sku "Standard_LRS" --query id --output tsv)
+
+# storage container
+az storage container create --name "$TERRAFORM_STORAGE_CONTAINER" --account-name "$TERRAFORM_STORAGE_ACCOUNT"
+
+# define container scope
+TERRAFORM_STORAGE_CONTAINER_SCOPE="$STORAGE_ID/blobServices/default/containers/$TERRAFORM_STORAGE_CONTAINER"
+echo $TERRAFORM_STORAGE_CONTAINER_SCOPE
+
+# assign rbac
+az role assignment create --assignee "$APP_CLIENT_ID" \
+  --role "Storage Blob Data Contributor" \
+  --scope "$TERRAFORM_STORAGE_CONTAINER_SCOPE"
 ```
 
 ## Create GitHub Repository Secrets

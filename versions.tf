@@ -7,7 +7,7 @@ terraform {
     key            = "terraform.tfstate"
     use_oidc       = true
 
-    # SP requires "Storage Blob Data Contributor" on the container
+    # requires "Storage Blob Data Contributor" on the container
     use_azuread_auth = true
   }
 
@@ -29,10 +29,5 @@ terraform {
 provider "azurerm" {
   # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_oidc#configuring-the-service-principal-in-terraform
   use_oidc = true
-
-  # SP requires "Storage Blob Data Contributor" on the container
-  use_azuread_auth = true
-
-  # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/features-block
   features {}
 }

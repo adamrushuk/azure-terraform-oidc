@@ -71,8 +71,8 @@ jobs:
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
 
-      - name: Create Terraform Backend Storage
-        run: ./scripts/terraform_backend_storage.sh
+      # - name: Create Terraform Backend Storage
+      #   run: ./scripts/terraform_backend_storage.sh
 
       # Terraform
       # https://github.com/hashicorp/setup-terraform
@@ -81,4 +81,14 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
 
       - name: Terraform Init / Validate / Apply
-        run: ./scripts/terraform_apply.sh
+        # run: ./scripts/terraform_apply.sh
+        run: |
+          terraform init \
+            -backend-config="resource_group_name=$TERRAFORM_STORAGE_RG" \
+            -backend-config="storage_account_name=$TERRAFORM_STORAGE_ACCOUNT"
+
+          # validate
+          terraform validate
+
+          # apply
+          terraform apply -auto-approve
