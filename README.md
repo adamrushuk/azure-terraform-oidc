@@ -1,8 +1,17 @@
+<!-- omit in toc -->
 # azure-terraform-oidc
 
 Testing OpenID Connect from GitHub to Azure.
 
-## Create Azure AD Application and Service Principal
+<!-- omit in toc -->
+## Contents
+
+- [Create Azure AD Application, Service Principal, and Federated Credential](#create-azure-ad-application-service-principal-and-federated-credential)
+- [Assign RBAC Role to Subscription](#assign-rbac-role-to-subscription)
+- [Create Terraform Backend Storage and Assign RBAC Role to Container](#create-terraform-backend-storage-and-assign-rbac-role-to-container)
+- [Create GitHub Repository Secrets](#create-github-repository-secrets)
+
+## Create Azure AD Application, Service Principal, and Federated Credential
 
 ```bash
 # login
@@ -93,9 +102,9 @@ az account show --query id --output tsv
 `ARM_CLIENT_ID`
 
 ```bash
-# using existing variable from previous step
+# use existing variable from previous step
 echo $APP_CLIENT_ID
 
-# using display name
+# or use display name
 az ad app list --display-name "$APP_REG_NAME" --query [].appId --output tsv
 ```
