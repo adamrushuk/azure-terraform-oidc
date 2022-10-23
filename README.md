@@ -25,7 +25,7 @@ cat <<EOF > cred_params.json
 {
   "name":"${GITHUB_REPO_OWNER}-${GITHUB_REPO_NAME}-federated-identity",
   "issuer":"https://token.actions.githubusercontent.com",
-  "subject":"repo:${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}:refs:refs/heads/main",
+  "subject":"repo:${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}:ref:refs/heads/main",
   "description":"${GITHUB_REPO_OWNER} ${GITHUB_REPO_NAME} main branch",
   "audiences":["api://AzureADTokenExchange"],
 }
