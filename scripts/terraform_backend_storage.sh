@@ -19,7 +19,7 @@ az storage account create --name "$TERRAFORM_STORAGE_ACCOUNT" --resource-group "
 echo "FINISHED: $taskMessage."
 
 # Storage Container
-taskMessage="Creating Storage Container"
+taskMessage="Creating Storage Container (using Azure AD auth)"
 echo "STARTED: $taskMessage..."
-az storage container create --name "terraform" --account-name "$TERRAFORM_STORAGE_ACCOUNT"
+az storage container create --name "terraform" --account-name "$TERRAFORM_STORAGE_ACCOUNT" --auth-mode login
 echo "FINISHED: $taskMessage."
