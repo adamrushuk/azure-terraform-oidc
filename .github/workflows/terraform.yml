@@ -1,12 +1,9 @@
 # terraform - github workflow
-# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-
 # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions
 name: terraform
 
 on:
   push:
-
   # enable manual workflow
   workflow_dispatch:
     inputs: {}
@@ -14,8 +11,8 @@ on:
 # permissions for oidc login
 # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect
 permissions:
-  id-token: write # This is required for requesting the JWT
-  contents: read # This is required for actions/checkout
+  id-token: write # required for requesting JWT
+  contents: read
 
 env:
   PREFIX: arshz
@@ -32,36 +29,32 @@ env:
   # terraform
   TF_IN_AUTOMATION: "true"
   TF_INPUT: "false"
-  TF_PLAN: "tfplan"
-  # https://github.com/hashicorp/terraform/releases
-  TF_VERSION: "1.3.3"
+  TF_LOG: "DEBUG" # https://developer.hashicorp.com/terraform/internals/debugging
+  TF_VERSION: "1.3.3" # https://github.com/hashicorp/terraform/releases
 
   # Env var concatenation is currently not supported at Workflow or Job scope. See workaround below:
   # https://github.community/t5/GitHub-Actions/How-can-we-concatenate-multiple-env-vars-at-workflow-and-job/td-p/48489
 
 jobs:
   terraform:
-    # always pin versions
-    # view installed software: https://docs.github.com/en/free-pro-team@latest/actions/reference/specifications-for-github-hosted-runners#supported-software
     runs-on: ubuntu-22.04
 
     # only run if owner triggered action
     if: github.actor == github.event.repository.owner.login
 
     steps:
-      # Checkout
+      # checkout
       # https://github.com/marketplace/actions/checkout
       - uses: actions/checkout@v3
 
-      # Init tasks - inc Env var concatenation
+      # init tasks - env var concatenation
       # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#environment-files
       - name: Init tasks - inc Env var concatenation (Workaround)
         run: |
-          chmod -R +x ./scripts/
           echo "TERRAFORM_STORAGE_ACCOUNT=${{ env.PREFIX }}sttfstate${{ env.LOCATION }}" >> $GITHUB_ENV
           echo "TERRAFORM_STORAGE_RG=${{ env.PREFIX }}-rg-tfstate" >> $GITHUB_ENV
 
-      # Login
+      # login
       # https://github.com/Azure/login
       - name: Login via OIDC to Azure Public Cloud (az cli and az powershell)
         uses: azure/login@v1
@@ -71,17 +64,14 @@ jobs:
           subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
 
-      # - name: Create Terraform Backend Storage
-      #   run: ./scripts/terraform_backend_storage.sh
-
-      # Terraform
+      # terraform
       # https://github.com/hashicorp/setup-terraform
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false # temp fix to stop set-output deprecation warnings
 
       - name: Terraform Init / Validate / Apply
-        # run: ./scripts/terraform_apply.sh
         run: |
           terraform init \
             -backend-config="resource_group_name=$TERRAFORM_STORAGE_RG" \
