@@ -4,9 +4,14 @@ name: terraform
 
 on:
   push:
-  # enable manual workflow
+  # manual workflow
+  # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onworkflow_dispatchinputs
   workflow_dispatch:
-    inputs: {}
+    inputs:
+      destroy_mode_enabled:
+        description: Enable destroy mode for Terraform
+        required: true
+        type: boolean
 
 # permissions for oidc login
 # https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect
@@ -77,7 +82,16 @@ jobs:
           # validate
           terraform validate
 
+          # validate
+          terraform validate
+
+          # set destroy mode
+          if [[ ${{ inputs.destroy_mode_enabled }} ]] ; then DESTROY='-destroy' fi
+
+          # plan
+          terraform plan $DESTROY -out tf_plan
+
           # apply
-          terraform apply -auto-approve \
+          terraform apply tf_plan -auto-approve \
             -var "prefix=$PREFIX" \
             -var "location=$LOCATION"
