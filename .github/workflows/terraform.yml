@@ -97,4 +97,4 @@ jobs:
 
           # apply
           echo 'Running terraform apply...'
-          terraform apply tf_plan -auto-approve
+          terraform apply -auto-approve tf_plan
