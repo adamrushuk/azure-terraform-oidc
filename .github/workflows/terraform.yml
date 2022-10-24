@@ -56,7 +56,7 @@ jobs:
           echo "TERRAFORM_STORAGE_ACCOUNT=${{ env.PREFIX }}sttfstate${{ env.LOCATION }}" >> $GITHUB_ENV
           echo "TERRAFORM_STORAGE_RG=${{ env.PREFIX }}-rg-tfstate" >> $GITHUB_ENV
 
-      - name: Enable Terraform Destroy Mode
+      - name: Enable Terraform Destroy
         if: ${{ inputs.destroy_mode_enabled }}
         run: |
           echo "TERRAFORM_DESTROY_MODE=-destroy" >> $GITHUB_ENV
@@ -78,22 +78,23 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
           terraform_wrapper: false # temp fix to stop set-output deprecation warnings
 
-      - name: Terraform Init / Validate / Apply
+      - name: Run Terraform Commands
         run: |
+          echo 'Running terraform init...'
           terraform init \
             -backend-config="resource_group_name=$TERRAFORM_STORAGE_RG" \
             -backend-config="storage_account_name=$TERRAFORM_STORAGE_ACCOUNT"
 
           # validate
-          terraform validate
-
-          # validate
+          echo 'Running terraform validate...'
           terraform validate
 
           # plan
-          terraform plan $TERRAFORM_DESTROY_MODE -out tf_plan
-
-          # apply
-          terraform apply tf_plan -auto-approve \
+          echo 'Running terraform plan...'
+          terraform plan $TERRAFORM_DESTROY_MODE -out tf_plan \
             -var "prefix=$PREFIX" \
             -var "location=$LOCATION"
+
+          # apply
+          echo 'Running terraform apply...'
+          terraform apply tf_plan -auto-approve
