@@ -56,6 +56,11 @@ jobs:
           echo "TERRAFORM_STORAGE_ACCOUNT=${{ env.PREFIX }}sttfstate${{ env.LOCATION }}" >> $GITHUB_ENV
           echo "TERRAFORM_STORAGE_RG=${{ env.PREFIX }}-rg-tfstate" >> $GITHUB_ENV
 
+      - name: Enable Terraform Destroy Mode
+        if: ${{ inputs.destroy_mode_enabled }}
+        run: |
+          echo "TERRAFORM_DESTROY_MODE=-destroy" >> $GITHUB_ENV
+
       # login
       # https://github.com/Azure/login
       - name: Login via OIDC to Azure Public Cloud (az cli and az powershell)
@@ -85,11 +90,8 @@ jobs:
           # validate
           terraform validate
 
-          # set destroy mode
-          if [[ ${{ inputs.destroy_mode_enabled }} ]] ; then DESTROY='-destroy' fi
-
           # plan
-          terraform plan $DESTROY -out tf_plan
+          terraform plan $TERRAFORM_DESTROY_MODE -out tf_plan
 
           # apply
           terraform apply tf_plan -auto-approve \
