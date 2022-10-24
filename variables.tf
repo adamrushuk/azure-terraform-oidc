@@ -1,6 +1,11 @@
+variable "prefix" {
+  description = "Prefix used for Azure resources"
+  default     = ""
+}
+
 variable "location" {
   description = "Location used for Azure resources"
-  default     = "eastus"
+  default     = ""
 }
 
 variable "rg_name" {
