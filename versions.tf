@@ -28,6 +28,7 @@ terraform {
 # https://github.com/terraform-providers/terraform-provider-azurerm/releases
 provider "azurerm" {
   # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_oidc#configuring-the-service-principal-in-terraform
-  use_oidc = true
+  use_oidc                   = true
+  skip_provider_registration = true
   features {}
 }
