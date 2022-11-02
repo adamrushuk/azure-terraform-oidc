@@ -1,5 +1,6 @@
 terraform {
-  required_version = ">= 1.0"
+  # https://github.com/hashicorp/terraform/releases
+  required_version = ">= 1.3"
 
   # https://developer.hashicorp.com/terraform/language/settings/backends/azurerm#example-configuration
   backend "azurerm" {
@@ -15,12 +16,12 @@ terraform {
     # https://github.com/terraform-providers/terraform-provider-azurerm/releases
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.28.0"
+      version = "~> 3.29.1"
     }
     # https://github.com/terraform-providers/terraform-provider-azuread/releases
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~> 2.29.0"
+      version = "~> 2.30.0"
     }
   }
 }
