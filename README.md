@@ -65,7 +65,7 @@ container:
 
 ```bash
 # vars
-PREFIX='arshz'
+PREFIX='arshzgh'
 LOCATION='eastus'
 TERRAFORM_STORAGE_RG="${PREFIX}-rg-tfstate"
 TERRAFORM_STORAGE_ACCOUNT="${PREFIX}sttfstate${LOCATION}"
@@ -136,7 +136,7 @@ az login
 
 # vars
 APP_REG_NAME='github_oidc'
-PREFIX='arshz'
+PREFIX='arshzgh'
 
 # remove app reg
 APP_CLIENT_ID=$(az ad app list --display-name "$APP_REG_NAME" --query [].appId --output tsv)
